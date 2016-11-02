@@ -11,7 +11,7 @@
     (def db-config
       {:classname "org.h2.Driver"
        :subprotocol "h2"
-       :subname "mem:documents"
+       :subname "/tmp/documents"
        :user ""
        :password ""})
 
@@ -22,7 +22,7 @@
                    (.setJdbcUrl (str "jdbc:" (:subprotocol config) ":" (:subname config)))
                    (.setUser (:user config))
                    (.setPassword (:password config))
-                   (.setMaxPoolSize 1)
+                   (.setMaxPoolSize 5)
                    (.setMinPoolSize 1)
                    (.setInitialPoolSize 1))]
         {:datasource cpds}))
@@ -31,11 +31,11 @@
 
     (defn db-connection [] @pooled-db)
 
-    (sql/with-connection (db-connection)
-    ;  (sql/drop-table :documents) ; no need to do that for in-memory databases
-      (sql/create-table :documents [:id "varchar(256)" "primary key"]
-                                   [:title "varchar(1024)"]
-                                   [:text :varchar]))
+    ;(sql/with-connection (db-connection)
+      ;(sql/drop-table :documents) ; no need to do that for in-memory databases
+      ;(sql/create-table :documents [:id "varchar(256)" "primary key"]
+      ;                             [:title "varchar(1024)"]
+      ;                             [:text :varchar]))
 
     (defn uuid [] (str (java.util.UUID/randomUUID)))
 
